@@ -7,8 +7,14 @@ freq_dirac = 1000;
 
 
 [m, fs] = audioread('original.mp3');
+NumAmostras = length(m);
+dft_sinal = abs(fft(m)/NumAmostras);
+f = fs*(0:(NumAmostras/2-1))/NumAmostras;
+plot(f, dft_sinal(1:(NumAmostras/2)));
 
-dft_sinal = fft(m);
+
+
+%{
 
 impulso_dirac = zeros(size(dft_sinal));
 
@@ -21,3 +27,9 @@ xlabel('Frequência (Hz)');
 ylabel('Magnitude');
 title('Espectro de Frequência');
 figure;plot(abs(sinal_conv));
+
+sinal = ifft(sinal_conv);
+figure;plot(m);
+sound(m, fs);
+
+%}
