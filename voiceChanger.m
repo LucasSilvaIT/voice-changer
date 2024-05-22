@@ -6,11 +6,14 @@ pkg load signal
 
 [m, fs] = audioread('original.mp3');
 
+frequencia_deslocar = 300000;
+
 % Carregar o arquivo de áudio
 %[sinal_audio, frequencia_amostragem] = audioread('audio_original.wav');
 
 % Calcular o comprimento do sinal de áudio
 %N = length(m);
+
 
 % Calcular a Transformada de Fourier Discreta (DFT) do sinal de áudio
 dft_sinal = fft(m);
@@ -19,8 +22,6 @@ dft_sinal = fft(m);
 frequencia = (0:(length(m))-1) * (fs / length(m));
 
 impulso_dirac = zeros(size(dft_sinal));
-
-frequencia_deslocar = 30000;
 
 impulso_dirac(frequencia_deslocar) = 1;
 
@@ -33,18 +34,23 @@ dft_sinal_conv = conv2(dft_sinal, impulso_dirac);
 
 filter = zeros(size(dft_sinal_conv));
 
-filter(1:28000) = 1;
+filter(300000:350000) = 1;
 
 dft_sinal_conv_filtrado = dft_sinal_conv .* filter;
 
+sinaltempofinal = ifft2(dft_sinal_conv_filtrado);
+
+sinaltempofinalF=reshape(sinaltempofinal, [], 1);
 
 % Plotar o espectro de frequência
-figure;plot(frequencia, abs(dft_sinal));
+figure;plot(abs(dft_sinal));
 xlabel('Frequência (Hz)');
-ylabel('Magnitude');
 title('Espectro de Frequência');
-figure;plot(m);
+%figure;plot(y);
+figure;plot(abs(dft_sinal_conv));
 figure;plot(abs(dft_sinal_conv_filtrado));
+figure;plot(sinaltempofinalF);
+figure;plot(m);
 
 
 %{
